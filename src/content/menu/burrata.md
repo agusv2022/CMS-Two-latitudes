@@ -1,7 +1,7 @@
 ---
 nombre: Burrata con tomates de estación
 descripcion: Burrata cremosa, tomates asados, albahaca y aceite de oliva.
-precio: 6800
+precio: 10000
 categoria: Entradas
 destacado: true
 orden: 1
