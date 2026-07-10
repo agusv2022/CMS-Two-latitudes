@@ -1,0 +1,66 @@
+---
+// ─────────────────────────────────────────────────────────────
+//  SEO.astro — todo el SEO técnico en un solo lugar, reusable.
+//  Meta tags + Open Graph + Twitter + canonical + JSON-LD schema.
+//  Se configura por props y se apoya en site.config.ts.
+// ─────────────────────────────────────────────────────────────
+import { site } from '../site.config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;       // ruta en /public, ej: /og.jpg
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = site.description,
+  image = '/og-default.jpg',
+  noindex = false,
+} = Astro.props;
+
+// Título: "Página · Marca" (o solo la marca en el home)
+const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — ${site.tagline}`;
+
+// URLs absolutas (necesarias para OG y canonical)
+const canonical = new URL(Astro.url.pathname, site.url).href;
+const ogImage = new URL(image, site.url).href;
+
+// JSON-LD: negocio local. Ayuda mucho al SEO local (Google Maps, rich results).
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': site.business.type,
+  name: site.name,
+  description: site.description,
+  url: site.url,
+  telephone: site.business.phone,
+  email: site.business.email,
+  address: site.business.address,
+  priceRange: site.business.priceRange,
+  openingHours: site.business.hours,
+};
+---
+
+<!-- Básicos -->
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+<!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- JSON-LD structured data -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

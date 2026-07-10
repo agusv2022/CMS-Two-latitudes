@@ -1,0 +1,237 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import EmbedSlot from '../components/EmbedSlot.astro';
+import { site } from '../site.config';
+
+// Platos destacados para la home (ordenados)
+const menu = await getCollection('menu');
+const destacados = menu
+  .filter((m) => m.data.destacado)
+  .sort((a, b) => a.data.orden - b.data.orden);
+
+// Próximos eventos publicados, por fecha
+const eventos = (await getCollection('eventos'))
+  .filter((e) => e.data.publicado)
+  .sort((a, b) => a.data.fecha.getTime() - b.data.fecha.getTime());
+
+const fmtPrecio = (n: number) => '$' + n.toLocaleString('es-AR');
+const fmtFecha = (d: Date) =>
+  d.toLocaleDateString('es-AR', { day: 'numeric', month: 'long' });
+---
+
+<BaseLayout>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-inner">
+      <p class="eyebrow" data-reveal>{site.tagline}</p>
+      <h1 data-reveal>{site.name}</h1>
+      <p class="hero-lede" data-reveal>{site.description}</p>
+      <div class="hero-cta" data-reveal>
+        <a href="#reservas" class="btn">Reservar mesa</a>
+        <a href="/menu" class="btn btn-ghost">Ver la carta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESTACADOS -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal>De la carta</p>
+      <h2 class="sec-title" data-reveal>Algunos favoritos</h2>
+      <div class="dishes">
+        {
+          destacados.map((d) => (
+            <article class="dish" data-reveal>
+              <div class="dish-head">
+                <h3>{d.data.nombre}</h3>
+                <span class="price">{fmtPrecio(d.data.precio)}</span>
+              </div>
+              <p>{d.data.descripcion}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div style="margin-top:28px" data-reveal>
+        <a href="/menu" class="btn btn-ghost">Carta completa →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTOS -->
+  <section class="section alt" id="eventos">
+    <div class="wrap">
+      <p class="eyebrow" data-reveal>Agenda</p>
+      <h2 class="sec-title" data-reveal>Próximos eventos</h2>
+      <div class="events">
+        {
+          eventos.map((e) => (
+            <article class="event" data-reveal>
+              <time>{fmtFecha(e.data.fecha)}</time>
+              <h3>{e.data.titulo}</h3>
+              <p>{e.data.resumen}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- RESERVAS -->
+  <section class="section" id="reservas">
+    <div class="wrap narrow">
+      <p class="eyebrow" data-reveal>Reservas</p>
+      <h2 class="sec-title" data-reveal>Asegurá tu mesa</h2>
+      <p class="sec-sub" data-reveal>
+        Reservá online o escribinos por WhatsApp.
+      </p>
+      <div data-reveal>
+        <EmbedSlot label="reservas (OpenTable / TheFork)" />
+      </div>
+      <div class="center" data-reveal>
+        <a href={site.links.whatsapp} class="btn" target="_blank" rel="noopener">
+          Reservar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACTO -->
+  <section class="section alt" id="contacto">
+    <div class="wrap contact">
+      <div data-reveal>
+        <p class="eyebrow">Contacto</p>
+        <h2 class="sec-title">Dónde encontrarnos</h2>
+        <p class="sec-sub">{site.business.address}</p>
+        <p class="sec-sub">{site.business.hours}</p>
+        <p class="sec-sub">{site.business.phone}</p>
+      </div>
+      <div data-reveal>
+        <EmbedSlot label="newsletter (Mailchimp / Brevo)" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 96px 0 84px;
+    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 80% -10%, var(--accent-soft), transparent 60%);
+  }
+  .hero-inner {
+    max-width: 760px;
+  }
+  .hero h1 {
+    font-size: clamp(52px, 10vw, 104px);
+    margin: 14px 0 20px;
+  }
+  .hero-lede {
+    font-size: clamp(17px, 2.4vw, 21px);
+    color: var(--muted);
+    max-width: 54ch;
+  }
+  .hero-cta {
+    display: flex;
+    gap: 12px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .sec-title {
+    font-size: clamp(28px, 5vw, 44px);
+    margin: 8px 0 32px;
+  }
+  .sec-sub {
+    color: var(--muted);
+    font-size: 16px;
+    margin-top: -20px;
+    margin-bottom: 28px;
+  }
+  .alt {
+    background: color-mix(in srgb, var(--accent) 3%, var(--paper));
+    border-block: 1px solid var(--line);
+  }
+  .narrow {
+    max-width: 720px;
+  }
+  .center {
+    text-align: center;
+    margin-top: 22px;
+  }
+
+  .dishes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .dish {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 26px;
+  }
+  .dish-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .dish-head h3 {
+    font-size: 21px;
+  }
+  .price {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .dish p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .events {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .event {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 24px 26px;
+  }
+  .event time {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .event h3 {
+    font-size: 22px;
+    margin: 8px 0 8px;
+  }
+  .event p {
+    color: var(--muted);
+    font-size: 15px;
+  }
+
+  .contact {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  @media (max-width: 720px) {
+    .dishes,
+    .events,
+    .contact {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

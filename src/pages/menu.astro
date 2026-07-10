@@ -1,0 +1,99 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const menu = await getCollection('menu');
+const categorias = ['Entradas', 'Pastas', 'Principales', 'Postres'] as const;
+
+const porCategoria = categorias.map((cat) => ({
+  cat,
+  items: menu
+    .filter((m) => m.data.categoria === cat)
+    .sort((a, b) => a.data.orden - b.data.orden),
+}));
+
+const fmtPrecio = (n: number) => '$' + n.toLocaleString('es-AR');
+---
+
+<BaseLayout title="Carta" description="Nuestra carta de pastas caseras, principales y postres.">
+  <section class="section">
+    <div class="wrap narrow">
+      <p class="eyebrow" data-reveal>Menú</p>
+      <h1 class="page-title" data-reveal>La carta</h1>
+
+      {
+        porCategoria.map(
+          (g) =>
+            g.items.length > 0 && (
+              <div class="cat" data-reveal>
+                <h2 class="cat-title">{g.cat}</h2>
+                <ul class="items">
+                  {g.items.map((it) => (
+                    <li class="item">
+                      <div class="item-line">
+                        <span class="item-name">{it.data.nombre}</span>
+                        <span class="dots" />
+                        <span class="item-price">{fmtPrecio(it.data.precio)}</span>
+                      </div>
+                      <p class="item-desc">{it.data.descripcion}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .narrow {
+    max-width: 760px;
+  }
+  .page-title {
+    font-size: clamp(40px, 8vw, 68px);
+    margin: 10px 0 40px;
+  }
+  .cat {
+    margin-bottom: 44px;
+  }
+  .cat-title {
+    font-size: 26px;
+    color: var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  .items {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .item-line {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .item-name {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 19px;
+  }
+  .dots {
+    flex: 1;
+    border-bottom: 1px dotted var(--line);
+    transform: translateY(-4px);
+  }
+  .item-price {
+    font-family: var(--mono);
+    color: var(--accent);
+    font-size: 15px;
+  }
+  .item-desc {
+    color: var(--muted);
+    font-size: 15px;
+    margin-top: 3px;
+  }
+</style>

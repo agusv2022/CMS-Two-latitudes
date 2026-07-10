@@ -1,0 +1,62 @@
+---
+import { site } from '../site.config';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <div class="f-brand">{site.name}</div>
+      <p class="f-sub">{site.business.address}</p>
+      <p class="f-sub">{site.business.hours}</p>
+    </div>
+    <div class="f-links">
+      <a href={site.links.whatsapp} target="_blank" rel="noopener">WhatsApp</a>
+      <a href={site.links.instagram} target="_blank" rel="noopener">Instagram</a>
+      <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
+    </div>
+  </div>
+  <div class="wrap f-legal">© {year} {site.name}</div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding: 48px 0 40px;
+    margin-top: 40px;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .f-brand {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 8px;
+  }
+  .f-sub {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .f-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .f-links a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 14px;
+  }
+  .f-links a:hover {
+    color: var(--accent);
+  }
+  .f-legal {
+    margin-top: 28px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+</style>

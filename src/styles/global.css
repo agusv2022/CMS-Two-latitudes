@@ -1,0 +1,96 @@
+:root {
+  --paper: #FBF8F3;
+  --ink: #201B16;
+  --muted: #7A7168;
+  --line: #E7E0D5;
+  --accent: #9C3B24;
+  --accent-soft: #F3E4DD;
+  --card: #FFFFFF;
+  --max: 1080px;
+
+  --display: 'Fraunces', Georgia, serif;
+  --sans: 'Inter', system-ui, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html {
+  scroll-behavior: smooth;
+}
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px 26px;
+  border-radius: 10px;
+  transition: transform 0.15s, background 0.15s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  background: color-mix(in srgb, var(--accent) 88%, black);
+}
+.btn-sm {
+  padding: 9px 16px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.btn-ghost:hover {
+  background: var(--card);
+  border-color: var(--accent);
+}
+
+/* Section rhythm */
+.section {
+  padding: 72px 0;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1,
+h2,
+h3 {
+  font-family: var(--display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}

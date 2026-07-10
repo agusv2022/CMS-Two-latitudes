@@ -1,0 +1,54 @@
+---
+// ─────────────────────────────────────────────────────────────
+//  EmbedSlot.astro — hueco para pegar widgets de terceros
+//  (reservas OpenTable/TheFork, newsletter Mailchimp, Calendly...).
+//  Mientras no haya código, muestra un placeholder claro.
+// ─────────────────────────────────────────────────────────────
+interface Props {
+  label?: string;
+}
+const { label = 'Widget embebido' } = Astro.props;
+const hasEmbed = Astro.slots.has('default');
+---
+
+{
+  hasEmbed ? (
+    <div class="embed"><slot /></div>
+  ) : (
+    <div class="embed placeholder">
+      <span class="tag">EMBED</span>
+      <p>Pegá acá el código del widget de <b>{label}</b>.</p>
+      <p class="hint">Ej: OpenTable / TheFork para reservas, Mailchimp para newsletter, Calendly para agenda.</p>
+    </div>
+  )
+}
+
+<style>
+  .embed {
+    width: 100%;
+  }
+  .placeholder {
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 34px 28px;
+    text-align: center;
+    background: color-mix(in srgb, var(--accent) 4%, transparent);
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: 20px;
+    padding: 4px 10px;
+  }
+  .placeholder p {
+    margin-top: 12px;
+    color: var(--ink);
+  }
+  .hint {
+    color: var(--muted) !important;
+    font-size: 13px;
+  }
+</style>
