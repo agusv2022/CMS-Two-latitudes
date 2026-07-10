@@ -1,0 +1,60 @@
+# ─────────────────────────────────────────────────────────────
+#  Pages CMS — panel de edición para el cliente.
+#  Este archivo mapea las colecciones de contenido a campos
+#  editables en app.pagescms.org. El cliente edita acá; al guardar,
+#  Pages CMS hace commit al repo y Cloudflare reconstruye solo.
+#  Docs: https://pagescms.org/docs/configuration/
+# ─────────────────────────────────────────────────────────────
+
+media:
+  input: public/img      # dónde se guardan las imágenes en el repo
+  output: /img           # cómo se referencian en el sitio
+
+content:
+  # ---- CARTA / MENÚ ----
+  - name: menu
+    label: Carta
+    type: collection
+    path: src/content/menu
+    filename: '{fields.nombre}.md'
+    view:
+      fields: [nombre, categoria, precio, destacado]
+      primary: nombre
+      sort: [orden, nombre]
+      default:
+        sort: orden
+        order: asc
+    fields:
+      - { name: nombre, label: Nombre del plato, type: string, required: true }
+      - { name: descripcion, label: Descripción, type: text, required: true }
+      - { name: precio, label: Precio, type: number, required: true }
+      - name: categoria
+        label: Categoría
+        type: select
+        required: true
+        options:
+          values: [Entradas, Pastas, Principales, Postres]
+      - { name: destacado, label: Mostrar en la home, type: boolean, default: false }
+      - { name: orden, label: Orden dentro de la categoría, type: number, default: 0 }
+
+  # ---- EVENTOS / NOVEDADES ----
+  - name: eventos
+    label: Eventos
+    type: collection
+    path: src/content/eventos
+    filename: '{fields.titulo}.md'
+    view:
+      fields: [titulo, fecha, publicado]
+      primary: titulo
+      sort: [fecha]
+    fields:
+      - { name: titulo, label: Título, type: string, required: true }
+      - name: fecha
+        label: Fecha
+        type: date
+        required: true
+        options:
+          format: yyyy-MM-dd
+      - { name: resumen, label: Resumen, type: text, required: true }
+      - { name: imagen, label: Imagen (opcional), type: image }
+      - { name: publicado, label: Publicado, type: boolean, default: true }
